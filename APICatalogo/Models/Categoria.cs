@@ -17,11 +17,11 @@ namespace APICatalogo.Models
 
         [Required]
         [StringLength(80)]
-        public string? Nome { get; set; }
+        public string Nome { get; set; }
 
         [Required]
         [StringLength(300)]
-        public string? ImagemURL { get; set; }
-        public ICollection<Produto>? Produtos { get; set; }
+        public string ImagemURL { get; set; }
+        public ICollection<Produto> Produtos { get; set; }
     }
 }
