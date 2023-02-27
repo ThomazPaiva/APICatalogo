@@ -1,11 +1,12 @@
 ﻿using APICatalogo.Context;
 using APICatalogo.Models;
+using APICatalogo.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace APICatalogo.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class CategoriasController : ControllerBase
     {
@@ -17,26 +18,30 @@ namespace APICatalogo.Controllers
         }
 
         [HttpGet("produtos")]
-        public ActionResult<List<Categoria>> Get()
+        public async Task<ActionResult<List<Categoria>>> ObterProdutosCategoria()
         {
-            //return _context.Categorias.AsNoTracking().Include(p => p.Produtos).ToList();
-            return _context.Categorias.AsNoTracking().Include(p => p.Produtos).Where(c => c.CategoriaId <= 5).ToList(); 
+            return await _context.Categorias.AsNoTracking().Include(p => p.Produtos).Where(c => c.CategoriaId <= 5).ToListAsync(); 
 
+        }
 
+        [HttpGet("saudacao/{nome}")]
+        public ActionResult<string> GetSaudacao([FromServices] IMeuServico meuServico, string nome) 
+        {
+            return meuServico.Saudacao(nome);
         }
 
         [HttpGet]
-        public ActionResult<List<Categoria>> ObterCategorias()
+        public async Task<ActionResult<List<Categoria>>> ObterCategorias()
         {
-            return _context.Categorias.AsNoTracking().ToList();
+            return await _context.Categorias.AsNoTracking().ToListAsync();
         }
 
         [HttpGet("{id:int}", Name = "ObterCategoriaPorId")]
-        public ActionResult<Categoria> ObterCategoriaPorId(int id)
+        public async Task<ActionResult<Categoria>> ObterCategoriaPorId(int id)
         {
             try
             {
-                var categoria = _context.Categorias.AsNoTracking().FirstOrDefault(p => p.CategoriaId == id);
+                var categoria = await _context.Categorias.AsNoTracking().FirstOrDefaultAsync(p => p.CategoriaId == id);
 
                 if (categoria == null)
                 {
@@ -100,11 +105,11 @@ namespace APICatalogo.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public ActionResult DeletarCategoria(int id)
+        public async Task<ActionResult> DeletarCategoria(int id)
         {
             try
             {
-                var categoria = _context.Categorias.FirstOrDefault(p => p.CategoriaId == id);
+                var categoria = await _context.Categorias.FirstOrDefaultAsync(p => p.CategoriaId == id);
 
                 if (categoria == null)
                 {

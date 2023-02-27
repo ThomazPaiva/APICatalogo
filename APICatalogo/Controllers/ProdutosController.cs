@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace APICatalogo.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ProdutosController : ControllerBase
     {
@@ -16,11 +16,11 @@ namespace APICatalogo.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Produto>> ObterProdutos()
+        public async Task<ActionResult<List<Produto>>> ObterProdutos()
         {
             try
             {
-                var produtos = _context.Produtos.AsNoTracking().ToList();
+                var produtos = await _context.Produtos.AsNoTracking().ToListAsync();
 
                 if (produtos == null)
                 {
@@ -37,11 +37,12 @@ namespace APICatalogo.Controllers
         }
 
         [HttpGet("{id:int}", Name = "ObterProdutoPorId")]
-        public ActionResult<Produto> ObterPorId(int id)
+        public async Task<ActionResult<Produto>> ObterPorId(int id)
         {
             try
             {
-                var produto = _context.Produtos.AsNoTracking().FirstOrDefault(p => p.ProdutoId == id);
+                var produto = await _context.Produtos.AsNoTracking().FirstOrDefaultAsync(p => p.ProdutoId == id);
+
                 if (produto == null)
                 {
                     return NotFound("Produto não encontrado");
@@ -104,11 +105,11 @@ namespace APICatalogo.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public ActionResult DeletarProduto(int id)
+        public async Task<ActionResult> DeletarProduto(int id)
         {
             try
             {
-                var produto = _context.Produtos.FirstOrDefault(p => p.ProdutoId == id);
+                var produto = await _context.Produtos.FirstOrDefaultAsync(p => p.ProdutoId == id);
 
                 if (produto == null)
                 {
